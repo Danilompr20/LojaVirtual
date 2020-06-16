@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LojaVirtual.Database;
+using LojaVirtual.Libraries.Login;
+using LojaVirtual.Libraries.Sessao;
+using LojaVirtual.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,10 +28,26 @@ namespace LojaVirtual
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //fazendo a injeção da classe HTTpContext
+            services.AddHttpContextAccessor();
             services.AddControllersWithViews();
 
             services.AddDbContext<LojaVirtualContext>(options =>
                    options.UseSqlServer(Configuration.GetConnectionString("Context")));
+            services.AddScoped<ICLienteRepository, ClienteRepository>();
+            services.AddScoped<INewslatterRepository, NewslatterRepository>();
+
+
+            // configurar sessão
+            services.AddMemoryCache();//guardar os dados na memória
+            services.AddSession(options=> { 
+            
+            });
+            // fazendo a injeção da classe sessão para ser usado por outras classes
+
+            services.AddScoped<Sessao>();
+            services.AddScoped<LoginCliente>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +69,7 @@ namespace LojaVirtual
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

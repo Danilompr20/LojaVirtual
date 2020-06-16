@@ -1,4 +1,4 @@
-﻿
+﻿@model LojaVirtual.Models.NewsletterEmail
 @{
     ViewData["Title"] = "Index";
 }
@@ -164,12 +164,20 @@
 
 
 </main>
+@*@using (Html.BeginForm("index", "home", FormMethod.Post))*@
+@using (Html.BeginForm(null,null,null,FormMethod.Post,false, new {@action = Url.Action("index","home")+"#formulario" }))
+{
 
-<form role="form" method="Post" action="/Home/ContatoAcao">
-    <div class="container">
+    <div class="container" id="formulario">
         <div class="row">
-
-
+            <div class="col-sm-6 offset-sm-2">
+                @if (TempData["MSG_S"] != null)
+                {
+                    <p class="alert alert-success">
+                        @TempData["MSG_S"]
+                    </p>
+                    }
+            </div>
             <div class="col-sm-6 offset-sm-2">
                 <div class="form-group">
                     <label for="nome">Cadastre seu e-mail para receber promoções</label>
@@ -177,20 +185,27 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-at"></i></span>
                         </div>
-                        <input type="text" id="nome" class="form-control" name="nome" placeholder=""
-                               required="" value="">
-                    </div> <!-- input-group.// -->
-                </div> <!-- form-group.// -->
+                        @Html.EditorFor(m => m.Email, new { hmtlAttributes = new { @class = "form-control" } })
+
+
+                        @*<input type="text" id="Email" class="form-control" name="nome" placeholder=""
+                    required="" value="NewsletterEmail.Email">*@
+                    </div>
+                    <span style="color:red;">@Html.ValidationMessageFor(m => m.Email)</span>
+                </div>
+
 
 
 
 
             </div>
             <div class="col-sm-2">
-                <button class="subscribe btn btn-primary btn-block" type="submit"> Enviar </button>
+                <br />
+                <button class="subscribe btn btn-primary btn-block" type="submit"> Cadastrar </button>
             </div>
 
 
         </div>
     </div>
-</form>
+
+}
